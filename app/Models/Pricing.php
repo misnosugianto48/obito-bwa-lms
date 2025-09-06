@@ -27,4 +27,13 @@ class Pricing extends Model
     {
         return $this->hasMany(Transaction::class, 'pricing_id', 'pricing_id');
     }
+
+    public function isSubscribedByUser($userId)
+    {
+        return $this->transactions()
+            ->where('user_id', $userId)
+            ->where('is_paid', true) //only consider paid subscription
+            ->where('ended_at', '>=', now()) // check if the subscription is still alive
+            ->exists();
+    }
 }
