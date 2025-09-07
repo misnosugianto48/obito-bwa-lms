@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class UserResource extends Resource
 {
@@ -48,16 +49,25 @@ class UserResource extends Resource
                         'Manager' => 'Manager'
                     ])
                     ->required(),
-                // Select::make('roles')
-                //     ->label('Role')
-                //     ->relationship('roles', 'name')
-                //     ->required(),
+                Select::make('roles')
+                    ->label('Role')
+                    ->relationship('roles', 'name')
+                    ->required(),
                 FileUpload::make('photo')
                     ->label('Profile Photo')
                     ->image()
                     ->required()
                     ->maxSize(1024)
                     ->directory('photos')
+                    ->deleteUploadedFileUsing(function ($record) {
+                        if ($record && $record->image && Storage::disk('public')->exists($record->image)) {
+                            Storage::disk('public')->delete($record->image);
+                        }
+                    })
+                    ->getUploadedFileNameForStorageUsing(
+                        fn(\Livewire\Features\SupportFileUploads\TemporaryUploadedFile $file): string => (string) str($file->getClientOriginalName())
+                            ->prepend('user-'),
+                    )
                     ->helperText('The profile photo must be an image file and not exceed 1MB in size.')
 
             ]);
@@ -71,7 +81,11 @@ class UserResource extends Resource
                     ->label('ID')
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('photo')
-                    ->circular(),
+                    ->label('Photo')
+                    ->circular()
+                    ->disk('public') // wajib!
+                    ->visibility('public'), // optional,
+                // ->url(fn($record) => Storage::disk('public')->url($record->photo)),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
