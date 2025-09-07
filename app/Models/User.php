@@ -5,13 +5,22 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes, HasRoles;
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasRole('admin');
+    }
 
     protected $primaryKey = 'user_id';
 
@@ -34,7 +43,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
+        // 'password',
         'remember_token',
     ];
 
@@ -59,5 +68,21 @@ class User extends Authenticatable
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class, 'user_id', 'user_id');
+    }
+
+    public function getActiveSubscription()
+    {
+        return $this->transactions()
+            ->where('is_paid', true)
+            ->where('ended_at', '>=', now())
+            ->first(); //return details of subscription
+    }
+
+    public function hasActiveSubscription()
+    {
+        return $this->transactions()
+            ->where('is_paid', true)
+            ->where('ended_at', '>=', now()) // ensure the subscription is active
+            ->exists(); // return  boolean
     }
 }
