@@ -88,6 +88,8 @@ class UserResource extends Resource
                 // ->url(fn($record) => Storage::disk('public')->url($record->photo)),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('occupation')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
             ])
             ->filters([
