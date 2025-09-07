@@ -6,6 +6,7 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,7 +24,12 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')
+                    ->label('Category Name')
+                    ->hint('The name is used to genrate the slug automatically.')
+                    ->helperText('Fill the category of the course.')
+                    ->required()
+                    ->maxLength(255)
             ]);
     }
 
@@ -31,13 +37,40 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('category_id')
+                    ->Label('ID')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->Label('Category Name')
+                    ->sortable()
+                    ->searchable()
+                    ->wrap(),
+                Tables\Columns\TextColumn::make('slug')
+                    ->Label('Category Slug')
+                    ->sortable()
+                    ->searchable()
+                    ->wrap(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->Label('Created At')
+                    ->sortable()
+                    ->searchable()
+                    ->dateTime()
+                    ->wrap(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->Label('Updated At')
+                    ->sortable()
+                    ->dateTime()
+                    ->searchable()
+                    ->wrap()
+
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
