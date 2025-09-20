@@ -45,7 +45,7 @@ class UserResource extends Resource
                     ->helperText('Password must be at least 9 characters long and contain at least one uppercase letter, one lowercase letter, and one number.')
                     ->regex('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/')
                     ->maxLength(255),
-                Select::make('occupation')
+                Select::make('ocupation')
                     ->options([
                         'Developer' => 'Developer',
                         'Designer' => 'Designer',
@@ -91,7 +91,7 @@ class UserResource extends Resource
                 // ->url(fn($record) => Storage::disk('public')->url($record->photo)),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('occupation')
+                Tables\Columns\TextColumn::make('ocupation')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
             ])
