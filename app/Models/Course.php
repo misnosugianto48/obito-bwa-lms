@@ -87,4 +87,6 @@ class Course extends Model
             return $section->sectionContents->count();
         });
     }
+
+    // TODO: buat relation manager untuk testimonial karena ga include dari materi bwa
 }
