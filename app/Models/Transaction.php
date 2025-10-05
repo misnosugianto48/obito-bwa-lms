@@ -46,7 +46,7 @@ class Transaction extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function student(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
