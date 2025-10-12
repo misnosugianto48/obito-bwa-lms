@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\PricingRepositoryInterface;
 use App\Models\Pricing;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 class PricingRepository implements PricingRepositoryInterface
 {
