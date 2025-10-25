@@ -5,5 +5,5 @@ return [
   'clientKey' => env('MIDTRANS_CLIENT_KEY'),
   'isProduction' => env('MIDTRANS_PRODUCTION'),
   'isSanitized' => env('MIDTRANS_SANITIZED'),
-  'isS3ds' => env('MDITRANS_3DS'),
+  'is3ds' => env('MDITRANS_3DS'),
 ];
