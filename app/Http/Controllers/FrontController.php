@@ -2,65 +2,101 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pricing;
+use App\Services\PaymentService;
+use App\Services\PricingService;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FrontController extends Controller
 {
+
+    protected $payment;
+    protected $transaction;
+    protected $pricing;
+
+    public function __construct(
+        PaymentService $paymentService,
+        TransactionService $transactionService,
+        PricingService $pricingService
+    ) {
+        $this->payment = $paymentService;
+        $this->transaction = $transactionService;
+        $this->pricing = $pricingService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return [
-            'hello' => 'obito'
-        ];
+        return view('front.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function pricing()
     {
-        //
+        $pricingPackeges = $this->pricing->getAllPackages();
+        $user = Auth::user();
+        return view('front.pricing', compact('pricingPackages', 'user'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function checkout(Pricing $price)
     {
-        //
+        $checkoutData = $this->transaction->prepareCheckout($price);
+
+        if ($checkoutData['alreadySubscribed']) {
+            return redirect()->route('front.pricing')->with('error', 'You already  subscribed this plan.');
+        }
+        return view('front.checkout', $checkoutData);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+
+    public function paymentStoreMidtrans()
     {
-        //
+        try {
+            $pricingId = session()->get('pricing_id');
+
+            if (!$pricingId) {
+                return response()->json(['error' => 'No pricing data found in this session'], 404);
+            }
+
+            $snapToken = $this->payment->createPayment($pricingId);
+
+            if (!$snapToken) {
+                return response()->json(['error' => 'Failed to create Midtrans transaction.'], 500);
+            }
+
+            return response()->json(['snapToken' => $snapToken], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Payment failed: ' . $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function paymentMidtransNotification(Request $request)
     {
-        //
+        try {
+            $transactionStatus = $this->payment->handlePaymentNotification();
+            if (!$transactionStatus) {
+                return response()->json(['error' => 'Invalid notification data'], 400);
+            }
+
+            return response()->json(['status' => $transactionStatus]);
+        } catch (\Exception $e) {
+            Log::error("Failed to handle midtrans  notification: ", ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Failed to process notification'], 500);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function checkoutSuccess()
     {
-        //
-    }
+        $pricing = $this->transaction->getRecentPricing();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($pricing) {
+            return redirect()->route('front.pricing')->with('error', 'No recent subscription found.');
+        }
+
+        return view('front.checkoutSuccess', compact('pricing'));
     }
 }

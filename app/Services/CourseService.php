@@ -4,10 +4,17 @@ namespace App\Services;
 
 use App\Models\Course;
 use App\Models\CourseSection;
+use App\Repositories\CourseRepository;
 use Illuminate\Support\Facades\Auth;
 
 class CourseService
 {
+  protected $courseRepo;
+
+  public function __construct(CourseRepository $courseRepository)
+  {
+    $this->courseRepo = $courseRepository;
+  }
 
   // cek apakah user sudah terdaftar di course atau belum
   public function enrollUser(Course $course)
@@ -74,5 +81,19 @@ class CourseService
       'nextContent' => $nextContent,
       'isFinished' => !$nextContent,
     ];
+  }
+
+  public function searchCourses(string $keyword)
+  {
+    return $this->courseRepo->searchByKeyword($keyword);
+  }
+
+  public function getCoursesGroupedByCategory()
+  {
+    $courses = $this->courseRepo->getAllWithCategory();
+
+    return $courses->groupBy(function ($course) {
+      return $course->category->name ?? 'Uncategorized';
+    });
   }
 }
