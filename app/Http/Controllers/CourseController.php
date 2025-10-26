@@ -42,7 +42,7 @@ class CourseController extends Controller
         $studentName = $this->course->enrollUser($course);
         $firstSectionAndContent = $this->course->getFirstSectionAndContent($course);
 
-        return view('courses.successJoined', array_merge(
+        return view('courses.success.joined', array_merge(
             compact('course', 'studentName'),
             $firstSectionAndContent
         ));
@@ -57,7 +57,7 @@ class CourseController extends Controller
 
     public function learningFinished(Course $course)
     {
-        return view('courses.learningFinished', compact('course'));
+        return view('courses.learning.finished', compact('course'));
     }
 
     public function searchCourses(Request $request)
