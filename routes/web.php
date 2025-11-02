@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard/courses/{course:slug}', [CourseController::class, 'detail'])->name('dashboard.course.detail');
         Route::get('/dashboard/search/courses', [CourseController::class, 'searchCourses'])->name('dashboard.search.course');
 
-        // 
+        // TODO: nnti bikin midleware sama table yang ngarahin coursenya ke type paid or free. kaya checkPaidCourse
         Route::middleware(['check.subscription'])->group(function () {
             Route::get('/dashboard/join/{course:slug}', [CourseController::class, 'join'])->name('dashboard.course.join');
             Route::get('/dashboard/learning/{course:slug}/{courseSection}/{sectionContent}', [CourseController::class, 'learning'])->name('dashboard.course.learning');
