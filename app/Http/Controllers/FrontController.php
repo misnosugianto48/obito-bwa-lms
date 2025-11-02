@@ -37,7 +37,7 @@ class FrontController extends Controller
 
     public function pricing()
     {
-        $pricingPackeges = $this->pricing->getAllPackages();
+        $pricingPackages = $this->pricing->getAllPackages();
         $user = Auth::user();
         return view('front.pricing', compact('pricingPackages', 'user'));
     }

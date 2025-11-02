@@ -5,19 +5,25 @@
                     <img src="{{ asset('assets/images/logos/logo-64.png') }}" class="flex shrink-0" alt="logo">
                 </a>
                 <ul class="flex items-center gap-10">
-                    <li class="hover:font-semibold transition-all duration-300 font-semibold">
+                    <li
+                        class="transition-all duration-300 hover:font-semibold {{ Route::is('front.index') ? 'font-semibold' : '' }}">
                         <a href="{{ route('front.index') }}">Home</a>
                     </li>
-                    <li class="hover:font-semibold transition-all duration-300">
+                    <li
+                        class="transition-all duration-300 hover:font-semibold {{ Route::is('front.pricing') ? 'font-semibold' : '' }}">
                         <a href="{{ route('front.pricing') }}">Pricing</a>
                     </li>
-                    <li class="hover:font-semibold transition-all duration-300">
-                        <a href="#">Features</a>
-                    </li>
-                    <li class="hover:font-semibold transition-all duration-300">
-                        <a href="#">Testimonials</a>
-                    </li>
+                    {{-- TODO: aktifin kalau udah ada aja --}}
+                    {{-- <li
+                        class="transition-all duration-300 hover:font-semibold {{ Route::is('front.features') ? 'font-semibold' : '' }}">
+                        <a href="{{ route('front.features') }}">Features</a>
+                    </li> --}}
+                    {{-- <li
+                        class="transition-all duration-300 hover:font-semibold {{ Route::is('front.testimonials') ? 'font-semibold' : '' }}">
+                        <a href="{{ route('front.testimonials') }}">Testimonials</a>
+                    </li> --}}
                 </ul>
+
             </div>
             <div class="flex items-center gap-5 justify-end">
                 <a href="#" class="flex shrink-0">
