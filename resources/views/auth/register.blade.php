@@ -1,30 +1,6 @@
-<!doctype html>
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{{ asset('output.css') }}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet" />
-    <title>Sign Up - Obito Online Learning Platform</title>
-    <meta name="description"
-        content="Obito is an innovative online learning platform that empowers students and professionals with high-quality, accessible courses.">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image.png') }}"" sizes="32x32" href="{{ asset('assets/images/logos/logo-64.png') }}"">
-    <link rel="apple-touch-icon" href="{{ asset('assets/images/logos/logo-64.png') }}"">
-
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Obito Online Learning Platform - Learn Anytime, Anywhere">
-    <meta property="og:description"
-        content="Obito is an innovative online learning platform that empowers students and professionals with high-quality, accessible courses.">
-    <meta property="og:image" content="https://obito-platform.netlify.app/assets/images/logos/logo-64-big.png">
-    <meta property="og:url" content="https://obito-platform.netlify.app">
-    <meta property="og:type" content="website">
-</head>
-
-<body>
+@extends('front.layouts.app')
+@section('title', 'Obito - Register New Account')
+@section('content')
     <x-nav-guest />
     <main class="relative flex flex-1 h-full">
         <section class="flex flex-1 items-center py-5 px-5 pl-[calc(((100%-1280px)/2)+75px)]">
@@ -56,8 +32,7 @@
                             class="appearance-none outline-none w-full rounded-full border border-obito-grey py-[14px] px-5 pl-12 font-semibold placeholder:font-normal placeholder:text-obito-text-secondary group-focus-within:border-obito-green transition-all duration-300"
                             placeholder="Type your complete name">
                         <img src="{{ asset('assets/images/icons/profile.svg') }}""
-                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5"
-                            alt="icon">
+                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5" alt="icon">
                     </label>
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
 
@@ -69,8 +44,7 @@
                             class="appearance-none outline-none w-full rounded-full border border-obito-grey py-[14px] px-5 pl-12 font-semibold placeholder:font-normal placeholder:text-obito-text-secondary group-focus-within:border-obito-green transition-all duration-300"
                             placeholder="Type your ocupation">
                         <img src="{{ asset('assets/images/icons/briefcase.svg') }}""
-                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5"
-                            alt="icon">
+                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5" alt="icon">
                     </label>
                     <x-input-error :messages="$errors->get('ocupation')" class="mt-2" />
 
@@ -82,8 +56,7 @@
                             class="appearance-none outline-none w-full rounded-full border border-obito-grey py-[14px] px-5 pl-12 font-semibold placeholder:font-normal placeholder:text-obito-text-secondary group-focus-within:border-obito-green transition-all duration-300"
                             placeholder="Type your valid email address">
                         <img src="{{ asset('assets/images/icons/sms.svg') }}""
-                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5"
-                            alt="icon">
+                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5" alt="icon">
                     </label>
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
 
@@ -95,8 +68,7 @@
                             class="appearance-none outline-none w-full rounded-full border border-obito-grey py-[14px] px-5 pl-12 font-semibold placeholder:font-normal placeholder:text-obito-text-secondary group-focus-within:border-obito-green transition-all duration-300"
                             placeholder="Type your password">
                         <img src="{{ asset('assets/images/icons/shield-security.svg') }}""
-                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5"
-                            alt="icon">
+                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5" alt="icon">
                     </label>
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
 
@@ -108,8 +80,7 @@
                             class="appearance-none outline-none w-full rounded-full border border-obito-grey py-[14px] px-5 pl-12 font-semibold placeholder:font-normal placeholder:text-obito-text-secondary group-focus-within:border-obito-green transition-all duration-300"
                             placeholder="Type your password">
                         <img src="{{ asset('assets/images/icons/shield-security.svg') }}""
-                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5"
-                            alt="icon">
+                            class="absolute size-5 flex shrink-0 transform -translate-y-1/2 top-1/2 left-5" alt="icon">
                     </label>
                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
 
@@ -129,7 +100,8 @@
     </main>
 
     {{-- <script src="{{ asset('js/dropdown-navbar.js') }}"></script> --}}
-    <script src="{{ asset('js/photo-upload.js') }}"></script>
-</body>
 
-</html>
+@endsection
+@push('after-scripts')
+    <script src="{{ asset('js/photo-upload.js') }}"></script>
+@endpush

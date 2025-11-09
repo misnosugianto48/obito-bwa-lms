@@ -8,9 +8,9 @@ use Illuminate\Support\Collection;
 
 class PricingRepository implements PricingRepositoryInterface
 {
-  public function findById(int $id): ?Pricing
+  public function findById(int $pricingId): ?Pricing
   {
-    return Pricing::find($id);
+    return Pricing::find($pricingId);
   }
 
   public function findAll(): Collection

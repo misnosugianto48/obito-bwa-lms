@@ -76,7 +76,6 @@ class TransactionResource extends Resource
                                                 $set('duration', $duration);
                                             }
                                         }),
-
                                     TextInput::make('duration')
                                         ->prefix('Months')
                                         ->required()

@@ -20,7 +20,7 @@ class TransactionService
   public function prepareCheckout(Pricing $pricing)
   {
     $user = Auth::user();
-    $alreadySubscribed = $pricing->isSubscribedByUser($user->id);
+    $alreadySubscribed = $pricing->isSubscribedByUser($user->user_id);
 
     $tax = 0.12;
     $total_tax_amount = $pricing->price * $tax;
@@ -30,17 +30,17 @@ class TransactionService
     $started_at = now();
     $ended_at = $started_at->copy()->addMonth($pricing->duration);
 
-    session()->put('pricing_id', $pricing->id);
+    session()->put('pricing_id', $pricing->pricing_id);
 
     return compact(
-      'alreadySubscribed',
-      'tax',
       'total_tax_amount',
-      'sub_total_amount',
       'grand_total_amount',
+      'sub_total_amount',
+      'pricing',
+      'user',
+      'alreadySubscribed',
       'started_at',
-      'ended_at',
-      'user'
+      'ended_at'
     );
   }
 
@@ -54,6 +54,6 @@ class TransactionService
   {
     $user = Auth::user();
 
-    return $this->transactionRepo->getUserTransactions($user->id);
+    return $this->transactionRepo->getUserTransactions($user->user_id);
   }
 }

@@ -15,7 +15,7 @@ class FrontController extends Controller
 
     protected $payment;
     protected $transaction;
-    protected $pricing;
+    protected $pricingService;
 
     public function __construct(
         PaymentService $paymentService,
@@ -24,7 +24,7 @@ class FrontController extends Controller
     ) {
         $this->payment = $paymentService;
         $this->transaction = $transactionService;
-        $this->pricing = $pricingService;
+        $this->pricingService = $pricingService;
     }
 
     /**
@@ -37,18 +37,20 @@ class FrontController extends Controller
 
     public function pricing()
     {
-        $pricingPackages = $this->pricing->getAllPackages();
+        $pricingPackages = $this->pricingService->getAllPackages();
         $user = Auth::user();
         return view('front.pricing', compact('pricingPackages', 'user'));
     }
 
-    public function checkout(Pricing $price)
+    public function checkout(Pricing $pricing)
     {
-        $checkoutData = $this->transaction->prepareCheckout($price);
+        $checkoutData = $this->transaction->prepareCheckout($pricing);
 
         if ($checkoutData['alreadySubscribed']) {
             return redirect()->route('front.pricing')->with('error', 'You already  subscribed this plan.');
         }
+
+        // return dd($checkoutData);
         return view('front.checkout', $checkoutData);
     }
 
