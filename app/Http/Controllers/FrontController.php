@@ -99,6 +99,6 @@ class FrontController extends Controller
             return redirect()->route('front.pricing')->with('error', 'No recent subscription found.');
         }
 
-        return view('front.checkout.success', compact('pricing'));
+        return view('front.checkout_success', compact('pricing'));
     }
 }

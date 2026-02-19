@@ -14,7 +14,9 @@
     </div>
     <main class="flex flex-1 justify-center py-5 items-center">
         <div class="flex w-[1000px] !h-fit rounded-[20px] border border-obito-grey gap-[40px] bg-white items-center p-5">
-            <form id="checkout-details" action="success-checkout.html" class="w-full flex flex-col gap-5">
+            <form id="checkout-details" method="POST" class="w-full flex flex-col gap-5">
+                @csrf
+                <input type="text" hidden name="payment_method" value="Midtrans">
                 <h1 class="font-bold text-[22px] leading-[33px]">Checkout Pro</h1>
                 <section id="give-access-to" class="flex flex-col gap-2">
                     <h2 class="font-semibold">Give Access to</h2>
@@ -94,7 +96,7 @@
                             <p class="font-semibold">Cancel</p>
                         </div>
                     </a>
-                    <button type="submit"
+                    <button id="pay-button" type="submit"
                         class="flex text-white bg-obito-green rounded-full items-center justify-center py-[10px] hover:drop-shadow-effect transition-all duration-300">
                         <p class="font-semibold">Pay Now</p>
                     </button>
@@ -152,4 +154,53 @@
 @endsection
 @push('after-scripts')
     <script src="{{ asset('js/dropdown-navbar.js') }}"></script>
+
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('midtrans.clientKey') }}"></script>
+
+    <script type="text/javascript">
+        const payButton = document.getElementById('pay-button');
+        payButton.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            fetch('{{ route('front.payment_store_midtrans') }}', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                    },
+                    body: JSON.stringify({
+                        // any additional data you want to send with the request
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // console.log(data);
+                    if (data.snapToken) {
+                        snap.pay(data.snapToken, {
+                            onSuccess: function(result) {
+                                window.location.href = "{{ route('front.checkout_success') }}";
+                            },
+                            onPending: function(result) {
+                                alert('Payment Pending!');
+                                window.location.href = "{{ route('front.index') }}";
+                            },
+                            onError: function(result) {
+                                alert('Payment Failed! ' + result.status_message);
+                                window.location.href = "{{ route('front.index') }}";
+                            },
+                            onClose: function() {
+                                alert('Payment Popup Closed!');
+                                window.location.href = "{{ route('front.index') }}";
+                            },
+                        });
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
 @endpush

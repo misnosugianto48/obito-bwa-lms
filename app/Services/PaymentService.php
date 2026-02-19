@@ -30,7 +30,15 @@ class PaymentService
   {
     $user = Auth::user();
 
+    // if (!$user) {
+    //   throw new \Exception('User not authenticated');
+    // }
+
     $pricing = $this->pricingRepo->findById($pricingId);
+
+    // if (!$pricing) {
+    //   throw new \Exception('Pricing data not found');
+    // }
 
     $tax = 0.12;
     $totalTax = $pricing->price * $tax;
@@ -58,9 +66,9 @@ class PaymentService
           'quantity' => 1,
           'name' => 'Ppn 12%'
         ],
-        'custom_field1' => $user->id,
-        'custom_field2' => $pricingId
-      ]
+      ],
+      'custom_field1' => $user->id,
+      'custom_field2' => $pricingId
     ];
 
     return $this->midtransService->createSnapToken($params);

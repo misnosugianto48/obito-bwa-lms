@@ -196,7 +196,6 @@ class TransactionResource extends Resource
                                 ]),
 
                             FileUpload::make('proof')
-                                ->required()
                                 ->image()
                                 ->maxSize(2048)
                                 ->directory('transactions')
