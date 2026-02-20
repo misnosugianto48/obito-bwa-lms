@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 interface PricingRepositoryInterface
 {
-  public function findById(int $id): ?Pricing;
+  public function findById(int $pricingId): ?Pricing;
 
   public function findAll(): Collection;
 }

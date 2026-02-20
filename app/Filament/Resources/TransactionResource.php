@@ -76,7 +76,6 @@ class TransactionResource extends Resource
                                                 $set('duration', $duration);
                                             }
                                         }),
-
                                     TextInput::make('duration')
                                         ->prefix('Months')
                                         ->required()
@@ -197,7 +196,6 @@ class TransactionResource extends Resource
                                 ]),
 
                             FileUpload::make('proof')
-                                ->required()
                                 ->image()
                                 ->maxSize(2048)
                                 ->directory('transactions')

@@ -2,63 +2,73 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
+use App\Services\CourseService;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+    protected $course;
+    public function __construct(CourseService $courseService)
+    {
+        $this->course = $courseService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+
+        $courseByCategory = $this->course->getCoursesGroupedByCategory();
+
+        return view('courses.index', compact('courseByCategory'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function detail(Course $course)
     {
-        //
+        $course->load(
+            [
+                'category',
+                'benefits',
+                'courseSections.sectionContents'
+            ]
+        );
+        return view('courses.details', compact('course'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function join(Course $course)
     {
-        //
+        $studentName = $this->course->enrollUser($course);
+        $firstSectionAndContent = $this->course->getFirstSectionAndContent($course);
+
+        return view('courses.success.joined', array_merge(
+            compact('course', 'studentName'),
+            $firstSectionAndContent
+        ));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function learning(Course $course, $contentSectionId, $sectionContentId)
     {
-        //
+        $learningData = $this->course->getLearningData($course, $contentSectionId, $sectionContentId);
+
+        return view('courses.learning', $learningData);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function learningFinished(Course $course)
     {
-        //
+        return view('courses.learning.finished', compact('course'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function searchCourses(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'search' => 'required|string'
+        ]);
+        $keyword = $request->search;
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $courses = $this->course->searchCourses($keyword);
+
+        return view('courses.search', compact('courses', 'keyword'));
     }
 }
