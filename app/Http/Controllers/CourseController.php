@@ -30,7 +30,8 @@ class CourseController extends Controller
             [
                 'category',
                 'benefits',
-                'courseSections.sectionContents'
+                'courseSections.sectionContents',
+                'courseMentors.user'
             ]
         );
         return view('courses.details', compact('course'));
@@ -42,7 +43,7 @@ class CourseController extends Controller
         $studentName = $this->course->enrollUser($course);
         $firstSectionAndContent = $this->course->getFirstSectionAndContent($course);
 
-        return view('courses.success.joined', array_merge(
+        return view('courses.success-joined', array_merge(
             compact('course', 'studentName'),
             $firstSectionAndContent
         ));

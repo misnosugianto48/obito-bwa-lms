@@ -22,9 +22,9 @@ class CourseService
 
     $user = Auth::user();
 
-    if (!$course->courseStudents()->where('user_id', $user->id)->exists()) {
+    if (!$course->courseStudents()->where('user_id', $user->user_id)->exists()) {
       $course->courseStudents()->create([
-        'user_id' => $user->id,
+        'user_id' => $user->user_id,
         'is_active' => true,
       ]);
     }
@@ -35,8 +35,8 @@ class CourseService
   // mendapatkan section dan content pertama dari course saat pertama kali user terdaftar di course
   public function getFirstSectionAndContent(Course $course): array
   {
-    $firstSectionId = $course->courseSections()->orderBy('id')->value('id');
-    $firstContentId = $firstSectionId ? $course->courseSections()->find($firstSectionId)->sectionContents()->orderBy('id')->value('id') : null;
+    $firstSectionId = $course->courseSections()->orderBy('course_section_id')->value('course_section_id');
+    $firstContentId = $firstSectionId ? $course->courseSections()->find($firstSectionId)->sectionContents()->orderBy('section_content_id')->value('section_content_id') : null;
 
     return [
       'firstSectionId' => $firstSectionId,
@@ -45,32 +45,32 @@ class CourseService
   }
 
   // mendapatkan data untuk halaman mana user belajar di course, supaya bisa lanjut ke content selanjutnya
-  public function getLearningData(Course $course, $contentSectionId, $sectionContentId): array
+  public function getLearningData(Course $course, $courseSectionId, $sectionContentId): array
   {
-    $course->load(['courseSection.sectionContents']);
+    $course->load(['courseSections.sectionContents']);
 
-    $currentSection = $course->courseSections()->find($contentSectionId);
+    $currentSection = $course->courseSections()->find($courseSectionId);
     $currentContent = $currentSection ? $currentSection->sectionContents()->find($sectionContentId) : null;
 
     $nextContent = null;
 
     if ($currentContent) {
 
-      $nextContent = $currentSection->sectionContents()
-        ->where('id', '>', $currentContent->id)
-        ->sortBy('id')
+      $nextContent = $currentSection->sectionContents
+        ->where('section_content_id', '>', $currentContent->section_content_id)
+        ->sortBy('section_content_id')
         ->first();
     }
 
     if (!$nextContent && $currentSection) {
 
-      $nextSection = $course->courseSections()
-        ->where('id', '>', $currentSection->id)
-        ->sortBy('id')
+      $nextSection = $course->courseSections
+        ->where('course_section_id', '>', $currentSection->course_section_id)
+        ->sortBy('course_section_id')
         ->first();
 
       if ($nextSection) {
-        $nextContent = $nextSection->sectionContents()->sortBy('id')->first();
+        $nextContent = $nextSection->sectionContents->sortBy('id')->first();
       }
     }
 
