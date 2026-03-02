@@ -70,7 +70,7 @@ class CourseService
         ->first();
 
       if ($nextSection) {
-        $nextContent = $nextSection->sectionContents->sortBy('id')->first();
+        $nextContent = $nextSection->sectionContents->sortBy('section_content_id')->first();
       }
     }
 

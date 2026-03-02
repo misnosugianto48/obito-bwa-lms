@@ -1,5 +1,5 @@
 @extends('front.layouts.app')
-@section('title', 'Obito - Course Join')
+@section('title', 'Obito - Success Join')
 @section('content')
     {{-- <x-navigation-auth /> --}}
 

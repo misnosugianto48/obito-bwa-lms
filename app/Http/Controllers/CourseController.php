@@ -54,11 +54,12 @@ class CourseController extends Controller
         $learningData = $this->course->getLearningData($course, $contentSectionId, $sectionContentId);
 
         return view('courses.learning', $learningData);
+        // return dd($learningData);
     }
 
     public function learningFinished(Course $course)
     {
-        return view('courses.learning.finished', compact('course'));
+        return view('courses.learning-finished', compact('course'));
     }
 
     public function searchCourses(Request $request)
